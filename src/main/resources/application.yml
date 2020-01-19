@@ -1,0 +1,20 @@
+appName: my-timer-wheel
+route: api
+version: 1.0.0
+
+server:
+  servlet:
+    context-path: /${route}
+  max-http-header-size: 2MB
+  port: 8080
+
+spring:
+  main:
+    # 延迟初始化(spring-boot 2.2开始支持)
+    lazy-initialization: true
+  devtools:
+    restart:
+      # 添加那个目录的文件需要restart
+      additional-paths: src/main/java
+      # 排除那个目录的文件不需要restart
+      exclude: static/**,public/**
