@@ -1,6 +1,8 @@
 package cn.sunny.mytimerwheel.controller;
 
 import cn.sunny.mytimerwheel.entity.People;
+import cn.sunny.mytimerwheel.service.MyDelayQueue;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +18,7 @@ import java.util.concurrent.DelayQueue;
 public class TimerController {
 
     private DelayQueue<People> queue = new DelayQueue<>();
+
     DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @GetMapping("/start")
@@ -81,5 +84,13 @@ public class TimerController {
             People people = new People(i.toString(), endTime);
             queue.add(people);
         }
+    }
+
+    @Autowired
+    MyDelayQueue myDelayQueue;
+
+    @GetMapping("/show")
+    public String show() {
+        return myDelayQueue.getThreadName();
     }
 }
