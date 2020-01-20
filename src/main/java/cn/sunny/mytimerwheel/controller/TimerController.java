@@ -20,13 +20,14 @@ public class TimerController {
 
     @GetMapping("/start")
     public String start() {
+        String threadName = Thread.currentThread().getName();
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
                 People people;
                 try {
                     people = queue.take();
-                    String res = String.format("name:%s time:%s", people.getName(), LocalDateTime.now().format(format));
+                    String res = String.format("[%s]name:%s time:%s", threadName, people.getName(), LocalDateTime.now().format(format));
                     System.out.println(res);
                 } catch (InterruptedException e) {
                     System.out.println("中断");
@@ -59,13 +60,26 @@ public class TimerController {
 
     @GetMapping("/remove/{name}")
     public Boolean remove(@PathVariable String name) {
-
         for (Iterator<People> it = queue.iterator(); it.hasNext(); ) {
             People current = it.next();
             if (current.getName().equals(name)) {
-                return queue.remove(current);
+                queue.remove(current);
             }
         }
-        return false;
+        return true;
+    }
+
+    @GetMapping("/size")
+    public int size() {
+        return queue.size();
+    }
+
+    @GetMapping("/pressure")
+    public void pressure() {
+        for (Integer i = 1; i < 50000; i++) {
+            long endTime = i * 1000 + System.currentTimeMillis();
+            People people = new People(i.toString(), endTime);
+            queue.add(people);
+        }
     }
 }
